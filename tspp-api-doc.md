@@ -23,4 +23,14 @@ t(ticker, weight_scheme=eq)
 3. t([SPX,SX5E,NKY], vol) - implied volatility weighted basket
 4. t([SPX,SX5E,NKY], [0.3,0.3,0.4]) - explicit weights
 
+### Expiry (e)
+
+Expiry object can be implicitly created from strings (when the context is clear). They can be created explicitly with the 'e' constructor.
+
+#### Examples
+
+1. e(2026-12-17)
+
+
+
 
