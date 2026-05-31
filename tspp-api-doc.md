@@ -25,7 +25,7 @@ t(ticker, weight_scheme=eq)
 
 ### Expiry (e)
 
-Expiry object can be implicitly created from strings (when the context is clear). They can be created explicitly with the 'e' constructor.
+Expiry objects can be created explicitly with the 'e' constructor. Expiry object can be implicitly created from strings or date (when the context is clear). 
 
 #### Tenor
 
@@ -35,8 +35,6 @@ Tenors are constant-maturity expiries i.e they are relative to a given date. Ten
 3. W : weeks
 4. M : months
 5. Y : years
-
-
 
 #### Examples
 
