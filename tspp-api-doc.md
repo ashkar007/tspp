@@ -1,6 +1,6 @@
 # TS++ Api
 
-TS++ is a domain specific language for relative-value analysis in equity vol domain and financial markets in general. The primary purpose is for AI agent  to translate natural language prompts into TS++ code for evaluation. However I have kept the syntax flexible and less verbose so that expert users can directly write the expressions themselves.  
+TS++ (TimeSeries++) is a domain specific language for timeseries analysis in equity vol domain and markets in general. The primary purpose of this language is to provide an intermediary language to do such analysis with more determinism. The syntax is kept simple and succict for humans to be able to write it. However primary intention is for AI agents to take a natural language prompt and generate the TS++ script. The script would then be interpreted by TS++ runtime engine.
 
 ## Objects
 
@@ -105,7 +105,12 @@ Option implied volatility as calibrated from market option prices.
 
 #### Syntax
 
-env.IV(Ticker, Expiry, Strike)
+IV(Ticker, Expiry, Strike)
+
+#### Examples
+1. IV(SX5E, 3M, 100%) : equivalent to IV(t(SX5E), e(3M), stk(100%)) - SX5E 3 month 100% (atm) vol
+2. IV(t([SX5E,SPX], [0.6,0.3]), Z26, 25DC) : Average of SX5E and SPX vol on 25 delta call on December 2026 expiry. Equivalent to "0.6 * IV(SX5E, Z26, 25DC) - 0.4 * IV(SPX, Z26, 25DC)"
+
 
 
 
