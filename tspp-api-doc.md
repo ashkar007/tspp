@@ -27,9 +27,21 @@ t(ticker, weight_scheme=eq)
 
 Expiry object can be implicitly created from strings (when the context is clear). They can be created explicitly with the 'e' constructor.
 
+#### Tenor
+
+Tenors are constant-maturity expiries i.e they are relative to a given date. Tenor has the format {unit}{period} where unit is an integer and period can be:
+1. D : calendar days
+2. B : business days
+3. W : weeks
+4. M : months
+5. Y : years
+
+
+
 #### Examples
 
-1. e(2026-12-17)
+1. 2026-12-17 or e(2026-12-17) : explicit expiry date
+2. tenor or e(tenor) : see below for valid tenor
 
 
 
