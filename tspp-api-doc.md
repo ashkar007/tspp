@@ -4,6 +4,17 @@ TS++ is a domain specific language for relative-value analysis in equity vol dom
 
 ## Objects
 
+### Environment (env)
+
+Environment object hold global variables/state of the session. They must be set somewhere in the session (on the top would be best). 
+
+#### Syntax
+
+set_env(start_date_or_tenor, end_date, calc_missing) where
+* start_date_or_tenor : explicit date or a valid tenor (see section on Tenor). Defaults to 2Y.
+* end_date : (default) explicit date. Defaults to today.
+* calc_missing: False
+
 ### Ticker (t)
 
 Ticker object encapsulates symbol(s). A list of tickers with a weight scheme represents a basket. A single ticker can be thought of as a basket of 1 ticker with 100% weight. Ticker object can be implicitly created from strings or list of strings when the context is clear.
@@ -53,6 +64,48 @@ Tenors are constant-maturity expiries i.e they are relative to a given date. Ten
 4. M : months
 5. Y : years
 Examples: 5B - 5 business days, 1W - 1 week, 3M - 3 months, 5Y - 5 years
+
+### Strike (stk)
+
+Strike object represents the strike level in the implied volatility surface. It accepts an input of the form {STRIKE_LEVEL}{STRIKE_TYPE}.
+
+Strike object can be created explicitly using 'stk' constructor. It can also be implicitly created from strings or decimal values (when the context is clear).
+
+#### STRIKE_TYPE
+
+Strike type gives meaning to the STRIKE_LEVEL. It can be one of the following:
+1. None/Missing - absolute strike
+2. F or % - forward moneyness
+3. S - spot moneyness
+4. D - delta. If STRIKE_LEVEL<0 then this implies Put delta and if STRIKE_LEVEL>0 then this implies Call delta
+5. DP - Put Delta (STRIKE_LEVEL is converted to abs number)
+6. DC - Call Delta (STRIKE_LEVEL is converted to abs number)
+7. N - normalised
+
+#### STRIKE_LEVEL
+
+Strike level will be an decimal value thus to represent 100% user must enter 100 (rather than 0.01). Similarly for 25 delta, user must enter STRIKE_LEVEL=25.
+
+#### Examples
+1. stk(25D) or stk(25DC) : STRIKE_LEVEL=25, STRIKE_TYPE=D. Interpreted as 25DC (25 delta call)
+2. stk(-15D) or stk(15DP) : STRIKE_LEVEL=-15, STRIKE_TYPE=D. Interpreted as 15DP (15 delta put)
+3. stk(90%) : STRIKE_LEVEL=90, STRIKE_TYPE=F. Interpreted as 90% forward moneyness
+4. stk(90.5s) : STRIKE_LEVEL=90.5, STRIKE_TYPE=S. Interpreted as 90.5% spot moneyness
+5. stk(-1.5N) : STRIKE_LEVEL=-1.5, STRIKE_TYPE=N. Interpreted as -1.5 normalised strike
+6. IV(SPX,3M,7300) : 7300 occurs in strike input thus is implicitly converted to stk(7300) which is 7300 absolute strike
+7. IV(SPX,3M,25DC) : 25DC occurs in strike input thus is implicitly converted to stk(25DC) which is 25 delta call
+
+## Metrics
+
+Metrics are type of data in the timeseries for example spot price, implied volatility, realised volatility etc. 
+
+### Implied Volatility (IV)
+
+Option implied volatility as calibrated from market option prices. 
+
+#### Syntax
+
+env.IV(Ticker, Expiry, Strike)
 
 
 
