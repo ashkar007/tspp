@@ -57,7 +57,7 @@ Syntax: e(TENOR_OR_FIXED_EXPIRY)
 
 Example:
 * Fixed expiry - e(2026-12-17), e(Z26), e(DEC2026)
-* Tenor - 3D, 2W, 18M, 2Y
+* Tenor - e(3D), e(2W), e(18M), e(2Y)
 
 #### Fixed expiry 
 
@@ -81,29 +81,28 @@ Format: {Start Tenor|Start Fixed Expiry}{Duration Tenor|Duration Fixed Expiry}
 
 Example: 1Y6M, Z66M, Z6Z7
 
-### Strike
+### Strike (k)
 
-Strike are string tokens of the 
+Strike may be created from a number (absolute strike) or a STRIKE_STRING of the format {STRIKE_LEVEL}{STRIKE_TYPE}. See strike types below.
 
-Format: {STRIKE_LEVEL}{STRIKE_TYPE} where STRIKE_TYPE is optional. See strike types below.
+Syntax: k(FLOAT|STRIKE_STRING)
 
-Examples:
+#### STRIKE_TYPE
+
+Strike type gives meaning to the STRIKE_LEVEL. It can be one of the following:
+1. % - forward moneyness
+2. %S - spot moneyness
+3. D - delta. If STRIKE_LEVEL<0 then this implies Put delta and if STRIKE_LEVEL>0 then this implies Call delta
+4. DP - Put Delta (STRIKE_LEVEL is converted to abs number)
+5. DC - Call Delta (STRIKE_LEVEL is converted to abs number)
+6. N - normalised
+
+#### Examples
 * 7500 - 7500 absolute strike
 * 100% or 100%f - 100% forward moneyness (ATM)
 * 25D - 25 delta
 * 25DP, 25DC - 25 delta put and call respectively
 * 1.5N - 1.5 normalised strike
-
-#### STRIKE_TYPE
-
-Strike type gives meaning to the STRIKE_LEVEL. It can be one of the following:
-1. None/Missing - absolute strike (ABS)
-2. %F or % - forward moneyness
-3. %S - spot moneyness
-4. D - delta. If STRIKE_LEVEL<0 then this implies Put delta and if STRIKE_LEVEL>0 then this implies Call delta
-5. DP - Put Delta (STRIKE_LEVEL is converted to abs number)
-6. DC - Call Delta (STRIKE_LEVEL is converted to abs number)
-7. N - normalised
 
 #### STRIKE_LEVEL
 
@@ -122,9 +121,9 @@ Option implied volatility as calibrated from market option prices.
 IV(Ticker, Expiry, Strike)
 
 #### Examples
-1. IV("SX5E", "3M", "100%") : SX5E 3 month 100% (atm) vol
-2. IV(t(["SX5E","SPX"], [0.6,0.3]), "Z26", "25DC") : Average of SX5E and SPX vol on 25 delta call on December 2026 expiry. Equivalent to "0.6 * IV(SX5E, Z26, 25DC) - 0.4 * IV(SPX, Z26, 25DC)"
-3. IV("SX5E", "1Y3M", "100%") : SX5E 1Y3M 100% (atm) forward vol
+1. IV(t("SX5E"), e("3M"), k("100%")) : SX5E 3 month 100% (atm) vol
+2. IV(t(["SX5E","SPX"], [0.6,0.3]), e("Z26"), k("25DC")) : Average of SX5E and SPX vol on 25 delta call on December 2026 expiry.
+3. IV(t("SX5E"), e("1Y3M"), k("100%")) : SX5E 1Y3M 100% (atm) forward vol
 
 
 
