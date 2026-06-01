@@ -1,12 +1,12 @@
 # Timeseries Intermediate Language (TSIL)
 
-TSIL is a domain specific language for market timeseries analytics. It is a high level language for generating and analysing internal and market timeseries data. For example to analyse our trading risk vs SPX implied vol. The core objects in the language is timeseries (pandas Series) with meta-data (for example series name, value type, raw expression, MAIL expression).
+TSIL is a domain specific language for market timeseries analytics. It is a high level language for generating and analysing signals and market timeseries data. For example to analyse correlation of US CPI vs SPX implied vol. The core objects in the language is timeseries (pandas DataFrame).
 
-## Objects
+## Fundamental Types
 
 ### String
 
-Strings do not need to be wrapped in inverted commas for ease of use. Examples: SPX, 3M, 100%
+Strings : "SPX", "3M", "100%"
 
 ### Number
 
@@ -16,40 +16,44 @@ Integers and Floats are supported.
 
 The only acceptable format is YYYY-MM-DD
 
+## Objects
+
 ### List
 
-Lists are repsented by [] or c(x1,x2,...,xn).
+Lists are repsented by [x1,x2,...,xn]
 
 ### Timeseries
 
-Timeseries is the basic object of interaction. We use pandas.Series indexed by date to represent timeseries.
+Timeseries (pandas Series) is the main object of computation. We use pandas.Series indexed by date to represent timeseries.
 
-### Ticker
+### Ticker (t)
 
-Tickers are strings (bloomberg id or reuters code). The position of the string parameter within a function call determines whether the string is to be treated as ticker. 
+Tickers are created by t(). Tickers can be a single symbol (bloomberg id or reuters code) or a list of symbols with weights (basket). If a list is passed in but no weights, weights default to equal weighted. 
 
-Examples: SPX, SX5E, .SPX, .STOXX50E, MSFT.O
+Syntax: t(ticker_list, weights=WGT_EQ)
+  ticker_list: can be single string or list of strings
+  weights: weights enum or list of weights (floats)
 
-### Basket (b)
+Examples:
+* t1 = t("SPX");
+* t2 = t(".STOXX50E")
+* basket = t(["SPX",".STOXX50E"]); // equal weighted basket
+* basket = t(["SPX",".STOXX50E"], [0.3,0.7]); // SPX = 30%, .STOXX50E = 70%
+* basket = t(["SPX",".STOXX50E"], WGT_VOL); // equal weighted basket
 
-Baskets are list of tickers with associated weighting scheme.
-
-Syntax: b(ticker_list, weight_scheme) 
-  symbol_list: list of symbols e.g [SPX,SX5E]
-  weight_scheme: string (eq-equal weighted (default), vol-volatility weighted) or list of weights (e.g [0.4,0.6])
-
-Example: 
-* b([SPX,SX5E]) - equal weighted basket
-* b([SPX,SX5E], eq)  - equal weighted basket
-* b([SPX,SX5E], vol) - vol weighted basket
+Weights enum:
+* WGT_EQ
+* WGT_VOL
+* WGT_MOM
+* WGT_MCAP
 
 ### Expiry (e)
 
 There are two types of expiries:
-* Fixed expiry date (DATE, MONTH_YEAR, LISTED_EXPIRY_CODE). These produce metrics in the timeseries where the expiries are fixed dates. 
+* Fixed expiry date can be DATE or MONTH_YEAR, LISTED_EXPIRY_CODE. These produce metrics in the timeseries where the expiries are fixed dates. 
 * Tenors are constant-maturity expiries where at every point in the timeseries the metric refers to a relative expiry (e.g 1 month).
 
-Syntax: e(TENOR_OR_FIX_EXPIRY)
+Syntax: e(TENOR_OR_FIXED_EXPIRY)
 
 Example:
 * Fixed expiry - e(2026-12-17), e(Z26), e(DEC2026)
@@ -57,9 +61,9 @@ Example:
 
 #### Fixed expiry 
 
-Monthly calendar codes are JAN,FEB,MAR,...,DEC.
+MONTH_YEAR: format {MMM}{YY}. Months are JAN,FEB,MAR,...,DEC e.g DEC26 for December 2026
 
-Listed monthly expiry codes are F=JAN, G=FEB, H=MAR, J=APR, K=MAY, M=JUN, N=JUL, Q=AUG, U=SEP, V=OCT, X=NOV, Z=DEC
+LISTED_EXPIRY_CODE: format {LISTED_MONTH_CODE}{YY}. Listed monthly expiry codes are F=JAN, G=FEB, H=MAR, J=APR, K=MAY, M=JUN, N=JUL, Q=AUG, U=SEP, V=OCT, X=NOV, Z=DEC. e.g. Z26.
 
 #### Tenor
 
@@ -81,7 +85,7 @@ Example: 1Y6M, Z66M, Z6Z7
 
 Strike are string tokens of the 
 
-Format: {STRIKE_LEVEL}{STRIKE_TYPE} where STRIKE_TYPE is optional.
+Format: {STRIKE_LEVEL}{STRIKE_TYPE} where STRIKE_TYPE is optional. See strike types below.
 
 Examples:
 * 7500 - 7500 absolute strike
@@ -103,7 +107,7 @@ Strike type gives meaning to the STRIKE_LEVEL. It can be one of the following:
 
 #### STRIKE_LEVEL
 
-Strike level will be an decimal value.
+Strike level will be an int or float value.
 
 ## Metrics
 
@@ -115,13 +119,13 @@ Option implied volatility as calibrated from market option prices.
 
 #### Syntax
 
-IV(Ticker|Basket, Expiry, Strike)
+IV(Ticker, Expiry, Strike)
 
 #### Examples
-1. IV(SX5E, 3M, 100%) : SX5E 3 month 100% (atm) vol
-2. IV(b([SX5E,SPX], [0.6,0.3]), Z26, 25DC) : Average of SX5E and SPX vol on 25 delta call on December 2026 expiry. Equivalent to "0.6 * IV(SX5E, Z26, 25DC) - 0.4 * IV(SPX, Z26, 25DC)"
-3. IV(SX5E, 1Y3M, 100%) : SX5E 1Y3M 100% (atm) forward vol
-4. 
+1. IV("SX5E", "3M", "100%") : SX5E 3 month 100% (atm) vol
+2. IV(t(["SX5E","SPX"], [0.6,0.3]), "Z26", "25DC") : Average of SX5E and SPX vol on 25 delta call on December 2026 expiry. Equivalent to "0.6 * IV(SX5E, Z26, 25DC) - 0.4 * IV(SPX, Z26, 25DC)"
+3. IV("SX5E", "1Y3M", "100%") : SX5E 1Y3M 100% (atm) forward vol
+
 
 
 
