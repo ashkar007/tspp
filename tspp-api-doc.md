@@ -17,14 +17,14 @@
 
 ### String
 
-String literals represent text values. Strings do not require quotes and can represent tickers, month codes, and other text identifiers.
+String literals represent text values.
 
 **Examples:**
 ```
-SPX
-3M
-100%
-DEC2026
+"SPX"
+"3M"
+"100%"
+"DEC2026"
 ```
 
 ### Number
