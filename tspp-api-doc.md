@@ -35,7 +35,7 @@ Syntax: t(ticker_list, weights=WGT_EQ)
   weights: weights enum or list of weights (floats)
 
 Examples:
-* t1 = t("SPX");
+* t1 = t("SPX")
 * t2 = t(".STOXX50E")
 * basket = t(["SPX",".STOXX50E"]); // equal weighted basket
 * basket = t(["SPX",".STOXX50E"], [0.3,0.7]); // SPX = 30%, .STOXX50E = 70%
@@ -53,11 +53,12 @@ There are two types of expiries:
 * Fixed expiry date can be DATE or MONTH_YEAR, LISTED_EXPIRY_CODE. These produce metrics in the timeseries where the expiries are fixed dates. 
 * Tenors are constant-maturity expiries where at every point in the timeseries the metric refers to a relative expiry (e.g 1 month).
 
-Syntax: e(TENOR_OR_FIXED_EXPIRY)
+Syntax: e(TENOR_OR_FIXED_EXPIRY, [DURATION TENOR_OR_FIXED_EXPIRY])
 
 Example:
-* Fixed expiry - e(2026-12-17), e(Z26), e(DEC2026)
-* Tenor - e(3D), e(2W), e(18M), e(2Y)
+* Fixed expiry - e("2026-12-17"), e("Z26"), e("DEC2026")
+* Tenor - e("3D"), e("2W"), e("18M"), e("2Y")
+* Forward expiry - e("1Y", "6M")
 
 #### Fixed expiry 
 
@@ -75,11 +76,9 @@ Tenor format is {UNITS}{PERIOD}, where UNITS is an integer and PERIOD can be:
 
 #### ForwardExpiry
 
-Forward expiries start in the future and have a certain duration/period thus.
+Forward expiries start in the future and have a certain duration/period thus. This is created by passing second argument in 'e' constructor.
 
-Format: {Start Tenor|Start Fixed Expiry}{Duration Tenor|Duration Fixed Expiry}
-
-Example: 1Y6M, Z66M, Z6Z7
+Example: e("1Y", "6M"), e("Z6","6M"), e("Z6","Z7")
 
 ### Strike (k)
 
@@ -121,9 +120,9 @@ Option implied volatility as calibrated from market option prices.
 IV(Ticker, Expiry, Strike)
 
 #### Examples
-1. IV(t("SX5E"), e("3M"), k("100%")) : SX5E 3 month 100% (atm) vol
-2. IV(t(["SX5E","SPX"], [0.6,0.3]), e("Z26"), k("25DC")) : Average of SX5E and SPX vol on 25 delta call on December 2026 expiry.
-3. IV(t("SX5E"), e("1Y3M"), k("100%")) : SX5E 1Y3M 100% (atm) forward vol
+1. t1 = IV(t("SX5E"), e("3M"), k("100%")) : SX5E 3 month 100% (atm) vol
+2. t2 = IV(t(["SX5E","SPX"], [0.6,0.3]), e("Z26"), k("25DC")) : Average of SX5E and SPX vol on 25 delta call on December 2026 expiry.
+3. t3 = IV(t("SX5E"), e("1Y3M"), k("100%")) : SX5E 1Y3M 100% (atm) forward vol
 
 
 
