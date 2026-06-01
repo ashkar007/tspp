@@ -334,6 +334,70 @@ iv6 = IV(t("SPX"), e("3M"), k("90%"))
 
 ---
 
+## Operations (on Timeseries)
+
+The following operations are supported on timeseries:
+
+### Arithmetic Operations
+
+| Operator | Name | Description |
+|---|---|---|
+| `+` | Addition | Element-wise addition |
+| `-` | Subtraction | Element-wise subtraction |
+| `*` | Multiplication | Element-wise multiplication |
+| `/` | Division | Element-wise division |
+| `**` or `pow()` | Power | Element-wise power |
+
+**Examples:**
+```python
+# Add two timeseries
+t1 + t2
+
+# Multiply by a constant
+t1 * 2
+
+# Calculate annualized vol (assuming daily data)
+annualized_vol = t1 * sqrt(252)
+
+# Percentage change
+percentage_change = (t1 - t2) / t2 * 100
+```
+
+---
+
+### Mathematical Functions
+
+| Function | Description |
+|---|---|
+| `sqrt(ts)` | Square root of ts |
+| `diff(ts, periods=1)` | Difference of ts by periods |
+| `pct_change(ts, periods=1)` | Percentage change of ts by periods |
+| `corr(ts, ts2, window)` | Rolling correlation between ts and ts2 |
+| `cov(ts, ts2, window)` | Rolling covariance between ts and ts2 |
+| `std(ts, window)` | Rolling standard deviation of ts |
+| `mean(ts, window)` | Rolling mean of ts |
+| `sharpe(ts, window)` | Rolling Sharpe ratio of ts |
+| `sum(ts, window)` | Rolling sum of ts |
+| `min(ts, window)` | Rolling minimum of ts |
+| `max(ts, window)` | Rolling maximum of ts |
+| `mode(ts)` | Mode of ts |
+| `percentile(ts, q)` | Percentile of ts |
+| `drawdown(ts, window)` | Drawdown of ts |
+
+**Examples:**
+```python
+# 3-month rolling Sharpe ratio
+rolling_sharpe = sharpe(ts1, window=360)
+
+# 30-day rolling correlation between two timeseries
+rolling_corr = corr(ts1, ts2, window=30)
+
+# Historical drawdown
+hd = drawdown(ts1, window=360)
+```
+
+---
+
 ## Putting It Together: Complete Workflow Examples
 
 ### Example 1: Analyzing Single Index Volatility Term Structure
