@@ -37,9 +37,9 @@ Syntax: t(ticker_list, weights=WGT_EQ)
 Examples:
 * t1 = t("SPX")
 * t2 = t(".STOXX50E")
-* basket = t(["SPX",".STOXX50E"]); // equal weighted basket
-* basket = t(["SPX",".STOXX50E"], [0.3,0.7]); // SPX = 30%, .STOXX50E = 70%
-* basket = t(["SPX",".STOXX50E"], WGT_VOL); // equal weighted basket
+* basket = t(["SPX",".STOXX50E"]) // equal weighted basket
+* basket = t(["SPX",".STOXX50E"], [0.3,0.7]) // SPX = 30%, .STOXX50E = 70%
+* basket = t(["SPX",".STOXX50E"], WGT_VOL) // equal weighted basket
 
 Weights enum:
 * WGT_EQ
@@ -97,11 +97,11 @@ Strike type gives meaning to the STRIKE_LEVEL. It can be one of the following:
 6. N - normalised
 
 #### Examples
-* 7500 - 7500 absolute strike
-* 100% or 100%f - 100% forward moneyness (ATM)
-* 25D - 25 delta
-* 25DP, 25DC - 25 delta put and call respectively
-* 1.5N - 1.5 normalised strike
+* k(7500) - 7500 absolute strike
+* k("100%") - 100% forward moneyness (ATM)
+* k("25D") - 25 delta
+* k("25DP"), k("25DC") - 25 delta put and call respectively
+* k("1.5N") - 1.5 normalised strike
 
 #### STRIKE_LEVEL
 
@@ -122,7 +122,7 @@ IV(Ticker, Expiry, Strike)
 #### Examples
 1. t1 = IV(t("SX5E"), e("3M"), k("100%")) : SX5E 3 month 100% (atm) vol
 2. t2 = IV(t(["SX5E","SPX"], [0.6,0.3]), e("Z26"), k("25DC")) : Average of SX5E and SPX vol on 25 delta call on December 2026 expiry.
-3. t3 = IV(t("SX5E"), e("1Y3M"), k("100%")) : SX5E 1Y3M 100% (atm) forward vol
+3. t3 = IV(t("SX5E"), e("1Y", "3M"), k("100%")) : SX5E 1Y3M 100% (atm) forward vol
 
 
 
